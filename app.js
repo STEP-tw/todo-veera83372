@@ -6,11 +6,21 @@ const TodoApp = require('./lib/TodoApp.js');
 let todoApp=new TodoApp(process.env.TODO_STORE||'./data/todoLists.json');
 todoApp.loadTodos();
 
+const saveEditedList = function (req,res) {
+  let user=req.user.userName;
+  let body=req.body;
+  todoApp.updateList(user,body.listId,body.title,body.desc);
+  res.redirect('/home.html');
+}
+
 const toHTML=function (todoLists) {
   let htmlStr=' ';
   todoLists.forEach((todoList,index)=>{
     htmlStr +=`<input type='text' value='${todoList.getTitle()}'  id='${index}_title' disabled />`
-    htmlStr +=`<input type='text' value='${todoList.getDescription()}'  id='${index}_desc' disabled /><br>`
+    htmlStr +=`<input type='text' value='${todoList.getDescription()}'  id='${index}_desc' disabled />
+    <button type='button' onclick="editList('${index}_title','${index}_desc')" >Edit</button>
+    <button type='button' style='display:none' id='${index}_title__${index}_desc' onclick="saveEditedList('${index}_title','${index}_desc')">save</button>
+    <br>`
   });
   return htmlStr;
 }
@@ -35,7 +45,13 @@ const getUserInfoAsHtml = function (user) {
 }
 
 const serveUserListItems= function (req,res) {
-  
+
+}
+
+const addUserTodoList=function (req,res) {
+  let user=req.user.userName;
+  todoApp.addTodoOfUser(user,req.body.title,req.body.desc);
+  res.redirect('/home.html');
 }
 
 const redirectLoggedOutUserToLogin = function (req,res) {
@@ -107,8 +123,9 @@ app.get('/logout',(req,res)=>{
   res.redirect('/login.html');
 });
 
+app.post('/saveEditedList',saveEditedList);
 app.get('/lists',serverUserTodoList);
-
+app.post('/addList',addUserTodoList);
 app.get('/items',serveUserListItems);
 app.postProcess(servFile);
 app.postProcess(resourceNotFound);
