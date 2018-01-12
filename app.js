@@ -60,7 +60,7 @@ app.post('/login',(req,res)=>{
   let sessionid = new Date().getTime();
   res.setHeader('Set-Cookie',`sessionid=${sessionid}`);
   user.sessionid = sessionid;
-  res.redirect('guestBook.html');
+  res.redirect('home.html');
 });
 
 app.get('/logout',(req,res)=>{
