@@ -58,7 +58,7 @@ const itemsToHTML =function (todoItems,listId) {
     htmlStr +=`<input type='checkbox' value='${item.getTitle()}'  id='${index}_${listId}'  >${item.getTitle()}</input>`
     htmlStr +=`<button type='button' onclick="editItem('${index}','${listId}')" >Edit</button>
     <button type='button' style='display:none'  onclick="saveEditedItem('${index}_title','${index}_desc')">save</button>
-    <button type='button' onclick="deleteItem('${index}_title','${index}_desc')">delete list</button>
+    <button type='button' onclick="deleteItem('${index}','${index}')">delete Item</button>
 
     <br>`
   })
@@ -78,6 +78,16 @@ const addItem = function (req,res) {
   res.respond(itemsToHTML(todoItems,listId),200,header);
 }
 
+
+const deleteItem = function (req,res) {
+  let user=req.user.userName;
+  todoApp.deleteListItem(user,req.body.listId,req.body.itemId);
+  let todoItems=todoApp.todos[user].todoLists[listId].todoItems;
+  let header={
+    'content-type':'text/html'
+  }
+  res.respond(itemsToHTML(todoItems,listId),200,header);
+}
 
 const serveUserListItems= function (req,res) {
   let user=req.user.userName;
@@ -171,6 +181,7 @@ app.post('/addList',addUserTodoList);
 app.post('/items',serveUserListItems);
 
 app.post('/addItem',addItem);
+app.post('/deleteItem',deleteItem);
 
 app.postProcess(servFile);
 app.postProcess(resourceNotFound);

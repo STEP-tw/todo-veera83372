@@ -40,7 +40,11 @@ let viewItems =function (titleId,descId) {
     document.getElementById('addItemButton').onclick=addItem.bind(null,listId);
 }
 
-
+let deleteItem=function (index,listId) {
+  doXMLRequest('post','/deleteItems',function(){
+    document.getElementById('items').innerHTML=this.response;
+  },`listId=${listId}&&itemId=${index}`);
+}
 
 let editList = function(titleId,descId){
   document.getElementById(titleId).disabled = false;
