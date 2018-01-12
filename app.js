@@ -10,8 +10,17 @@ const resourceNotFound = function (req,res) {
   res.end();
 }
 
+
+
+const getUserInfoAsHtml = function (user) {
+  return `<h3> hello ${user.name}
+  </h3>
+  <a href='/logout' > Logout </a>`;
+}
+
+
 const redirectLoggedOutUserToLogin = function (req,res) {
-  if(req.urlIsOneOf(['/','/logout']) && !req.user)
+  if(req.urlIsOneOf(['/','/home.html','/logout']) && !req.user)
     res.redirect('login.html');
 }
 
@@ -39,6 +48,15 @@ let loadUser = (req,res)=>{
   }
 };
 
+let respondWithLoginStatus = function (req,res) {
+  let loginStatus;
+  if(req.user){
+    res.respond(getUserInfoAsHtml(req.user),200,{'content-type':'text/html'});
+  }else{
+    res.respond('false',200,{});
+  }
+}
+
 let redirectLoggedInUserToHome = (req,res)=>{
   if(req.urlIsOneOf(['/login.html']) && req.user) res.redirect('/home.html');
 }
@@ -50,6 +68,7 @@ app.use(loadUser);
 app.use(redirectLoggedInUserToHome);
 app.use(redirectLoggedOutUserToLogin);
 
+app.get('/loginStatus',respondWithLoginStatus);
 app.post('/login',(req,res)=>{
   let user = registered_users.find(u=>u.userName==req.body.userName);
   if(!user) {
