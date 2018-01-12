@@ -41,7 +41,7 @@ let viewItems =function (titleId,descId) {
 }
 
 let deleteItem=function (index,listId) {
-  doXMLRequest('post','/deleteItems',function(){
+  doXMLRequest('post','/deleteItem',function(){
     document.getElementById('items').innerHTML=this.response;
   },`listId=${listId}&&itemId=${index}`);
 }
