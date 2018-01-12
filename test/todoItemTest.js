@@ -31,7 +31,7 @@ describe('ToDo Item updating data',()=>{
     beforeEach(()=>{
       todoItem=new TodoItem('demo');
     })
-    it('updates the title of with given title',()=>{
+    it('updates the title of item with given title',()=>{
       let expected='demo item';
       todoItem.updateTitle('demo item');
       let actual=todoItem.getTitle()
