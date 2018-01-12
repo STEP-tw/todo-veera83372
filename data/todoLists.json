@@ -3,16 +3,21 @@
     "user": "veera",
     "todoLists": [
       {
-        "title": "hello",
-        "desc": "i am new",
-        "date": "Fri Jan 12 2018 17:34:29 GMT+0530 (IST)",
-        "todoItems": []
-      },
-      {
-        "title": "sadfd",
-        "desc": "dsafd",
-        "date": "Fri Jan 12 2018 17:37:19 GMT+0530 (IST)",
-        "todoItems": []
+        "title": "sadf",
+        "desc": "sdfsdaf",
+        "date": "Fri Jan 12 2018 18:08:21 GMT+0530 (IST)",
+        "todoItems": [
+          {
+            "title": "hi",
+            "status": false,
+            "date": "Fri Jan 12 2018 18:48:07 GMT+0530 (IST)"
+          },
+          {
+            "title": "hi",
+            "status": false,
+            "date": "Fri Jan 12 2018 18:48:11 GMT+0530 (IST)"
+          }
+        ]
       }
     ]
   }

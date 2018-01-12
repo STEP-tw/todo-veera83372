@@ -13,18 +13,26 @@ const saveEditedList = function (req,res) {
   res.redirect('/home.html');
 }
 
-const toHTML=function (todoLists) {
+const listToHTML=function (todoLists) {
   let htmlStr=' ';
   todoLists.forEach((todoList,index)=>{
     htmlStr +=`<input type='text' value='${todoList.getTitle()}'  id='${index}_title' disabled />`
     htmlStr +=`<input type='text' value='${todoList.getDescription()}'  id='${index}_desc' disabled />
     <button type='button' onclick="editList('${index}_title','${index}_desc')" >Edit</button>
-    <button type='button' style='display:none' id='${index}_title__${index}_desc' onclick="saveEditedList('${index}_title','${index}_desc')">save</button>
-    <br>`
+    <button type='button' style='display:none'  onclick="saveEditedList('${index}_title','${index}_desc')">save</button>
+    <button type='button' onclick="deleteList('${index}_title','${index}_desc')">delete list</button>
+    <button type='button' onclick="viewItems('${index}_title','${index}_desc')">view Items</button>
+    <br>`;
   });
   return htmlStr;
 }
 
+const deleteUserList = function (req,res) {
+  let user=req.user.userName;
+  console.log(user,req.body.titleId)
+  todoApp.deleteTodoList(user,req.body.titleId);
+  res.redirect('/home.html');
+}
 const resourceNotFound = function (req,res) {
   res.statusCode=404;
   res.write('resource not found');
@@ -34,7 +42,7 @@ const resourceNotFound = function (req,res) {
 const serverUserTodoList= function (req,res) {
   let header={'content-type':'text/html'};
   if(todoApp.todos[req.user.userName])
-    return res.respond(toHTML(todoApp.todos[req.user.userName].todoLists),200,header);
+    return res.respond(listToHTML(todoApp.todos[req.user.userName].todoLists),200,header);
   return res.respond('<b>no lists found</b>',200,header);
 }
 
@@ -44,8 +52,41 @@ const getUserInfoAsHtml = function (user) {
   <a href='/logout' > Logout </a>`;
 }
 
-const serveUserListItems= function (req,res) {
+const itemsToHTML =function (todoItems,listId) {
+  let htmlStr='';
+  todoItems.forEach((item,index)=>{
+    htmlStr +=`<input type='checkbox' value='${item.getTitle()}'  id='${index}_${listId}'  >${item.getTitle()}</input>`
+    htmlStr +=`<button type='button' onclick="editItem('${index}','${listId}')" >Edit</button>
+    <button type='button' style='display:none'  onclick="saveEditedItem('${index}_title','${index}_desc')">save</button>
+    <button type='button' onclick="deleteItem('${index}_title','${index}_desc')">delete list</button>
 
+    <br>`
+  })
+  return htmlStr;
+}
+
+const addItem = function (req,res) {
+  let user=req.user.userName;
+  let listId=req.body.listId;
+  let title=req.body.title;
+  todoApp.todos[user].addTodoItem(listId,title);
+  let todoItems=todoApp.todos[user].todoLists[listId].todoItems;
+  todoApp.saveTodos();
+  let header={
+    'content-type':'text/html'
+  }
+  res.respond(itemsToHTML(todoItems,listId),200,header);
+}
+
+
+const serveUserListItems= function (req,res) {
+  let user=req.user.userName;
+  let listId=req.body.listId;
+  let todoItems=todoApp.todos[user].todoLists[listId].todoItems;
+  let header={
+    'content-type':'text/html'
+  }
+  res.respond(itemsToHTML(todoItems,listId),200,header);
 }
 
 const addUserTodoList=function (req,res) {
@@ -123,10 +164,14 @@ app.get('/logout',(req,res)=>{
   res.redirect('/login.html');
 });
 
+app.post('/deleteList',deleteUserList);
 app.post('/saveEditedList',saveEditedList);
 app.get('/lists',serverUserTodoList);
 app.post('/addList',addUserTodoList);
-app.get('/items',serveUserListItems);
+app.post('/items',serveUserListItems);
+
+app.post('/addItem',addItem);
+
 app.postProcess(servFile);
 app.postProcess(resourceNotFound);
 
