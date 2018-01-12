@@ -1,0 +1,23 @@
+{
+  "veera": {
+    "name": "veera",
+    "todoLists": [
+      {
+        "title": "demo list ",
+        "desc": "dummy list",
+        "todoItems": [
+          {
+            "title": "demo item",
+            "status": true
+          }
+        ]
+      },
+      {
+        "title": "nakili",
+        "desc": "namuna",
+        "date": "Fri Jan 12 2018 16:20:30 GMT+0530 (IST)",
+        "todoItems": []
+      }
+    ]
+  }
+}
