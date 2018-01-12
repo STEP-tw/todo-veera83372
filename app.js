@@ -2,7 +2,18 @@ const servFile = require('./serverLib/servFile.js');
 const fs = require('fs');
 const timeStamp = require('./time.js').timeStamp;
 const WebApp = require('./webapp');
+const TodoApp = require('./lib/TodoApp.js');
+let todoApp=new TodoApp(process.env.TODO_STORE||'./data/todoLists.json');
+todoApp.loadTodos();
 
+const toHTML=function (todoLists) {
+  let htmlStr=' ';
+  todoLists.forEach((todoList,index)=>{
+    htmlStr +=`<input type='text' value='${todoList.getTitle()}'  id='${index}_title' disabled />`
+    htmlStr +=`<input type='text' value='${todoList.getDescription()}'  id='${index}_desc' disabled /><br>`
+  });
+  return htmlStr;
+}
 
 const resourceNotFound = function (req,res) {
   res.statusCode=404;
@@ -10,7 +21,12 @@ const resourceNotFound = function (req,res) {
   res.end();
 }
 
-
+const serverUserTodoList= function (req,res) {
+  let header={'content-type':'text/html'};
+  if(todoApp.todos[req.user.userName])
+    return res.respond(toHTML(todoApp.todos[req.user.userName].todoLists),200,header);
+  return res.respond('<b>no lists found</b>',200,header);
+}
 
 const getUserInfoAsHtml = function (user) {
   return `<h3> hello ${user.name}
@@ -18,9 +34,12 @@ const getUserInfoAsHtml = function (user) {
   <a href='/logout' > Logout </a>`;
 }
 
+const serveUserListItems= function (req,res) {
+  
+}
 
 const redirectLoggedOutUserToLogin = function (req,res) {
-  if(req.urlIsOneOf(['/','/home.html','/logout']) && !req.user)
+  if(req.urlIsOneOf(['/','/home.html','/logout','/addList']) && !req.user)
     res.redirect('login.html');
 }
 
@@ -88,6 +107,9 @@ app.get('/logout',(req,res)=>{
   res.redirect('/login.html');
 });
 
+app.get('/lists',serverUserTodoList);
+
+app.get('/items',serveUserListItems);
 app.postProcess(servFile);
 app.postProcess(resourceNotFound);
 

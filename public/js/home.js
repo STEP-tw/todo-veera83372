@@ -1,17 +1,22 @@
 let handleLoginStatus = function () {
-  console.log(this.response);
   if(this.response != 'false')
     document.getElementById('user').innerHTML=this.response;
 }
 
 
-let getLoginStatus= function () {
+let doXMLRequest= function (method,url,callback,data) {
   let xml= new XMLHttpRequest();
-  xml.onload=handleLoginStatus;
-  xml.open('get','/loginStatus');
-  xml.send();
+  xml.onload=callback;
+  xml.open(method,url);
+  xml.send(data);
 }
 
+let displayList = function () {
+  document.getElementById('lists').innerHTML=this.response;
+}
+
+
 window.onload = function () {
-   getLoginStatus();
+  doXMLRequest('get','/loginStatus',handleLoginStatus);
+  doXMLRequest('get','/lists',displayList);
  };
