@@ -24,6 +24,7 @@ let addList = function(){
 
 let addItem =function (listId) {
   let title=document.getElementById('item-title').value;
+  document.getElementById('item-title').value='';
   if(title.length>0)
     doXMLRequest('post','/addItem',function(){
     document.getElementById('items').innerHTML=this.response;
@@ -43,13 +44,34 @@ let viewItems =function (titleId,descId) {
 let deleteItem=function (index,listId) {
   doXMLRequest('post','/deleteItem',function(){
     document.getElementById('items').innerHTML=this.response;
-  },`listId=${listId}&&itemId=${index}`);
+  },`listId=${listId}&itemId=${index}`);
 }
+
+
+let editItem = function(itemId,listId){
+  document.getElementById(itemId+'_'+listId).disabled = false;
+  document.getElementById(itemId+'__'+listId).style.display = "block";
+}
+
+let saveEditedItem = function (itemId,listId) {
+  let title=document.getElementById(itemId+'_'+listId).value;
+  if(title.length>0)
+    doXMLRequest('post','/saveEditedItem',function(){
+      document.getElementById('items').innerHTML=this.response;
+    },`title=${title}&itemId=${itemId}&listId=${listId}`);
+}
+
 
 let editList = function(titleId,descId){
   document.getElementById(titleId).disabled = false;
   document.getElementById(descId).disabled = false;
   document.getElementById(titleId+'__'+descId).style.display = "block";
+}
+
+let updateItem = function (itemId,listId) {
+  doXMLRequest('post','/updateItemStatus',function(){
+    document.getElementById('items').innerHTML=this.response;
+  },`itemId=${itemId}&listId=${listId}`);
 }
 
 let saveEditedList = function (titleId,descId) {
