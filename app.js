@@ -18,7 +18,9 @@ const getUserInfoAsHtml = function (user) {
 }
 
 const redirectLoggedOutUserToLogin = function (req,res) {
-  if(req.urlIsOneOf(['/','/home.html','/logout']) && !req.user)
+  let urls=Object.keys(app._handlers['POST'])
+  .slice(1).concat(['/','/home.html','/logout']);
+  if(req.urlIsOneOf(urls) && !req.user)
     res.redirect('login.html');
 }
 

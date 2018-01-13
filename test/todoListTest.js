@@ -68,4 +68,16 @@ describe('ToDo List modifying data',()=>{
     })
   })
 
+  describe('deleteItem',()=>{
+    beforeEach(()=>{
+      todoList=new TodoList('demo','dummy');
+    })
+    it('delete item from list items ',()=>{
+      todoList.addItem('dummy item');
+      todoList.deleteItem(0);
+      let actual=todoList.getItems()
+      assert.deepEqual(actual,[]);
+    })
+  })
+
 })

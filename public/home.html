@@ -12,26 +12,45 @@
     <div class="" id="menu">
 
     </div>
-    <div class="" id="addList">
-      <form class="" >
-        <input type="text" id="title" value="" placeholder="Enter title of Todo" required/>
-        <input type="text" id="desc" value="" placeholder="Enter description" required />
-        <button type="button" name="button" onclick="addList()">Add</button>
-      </form>
-    </div>
-
-
+<table>
+  <tr>
+    <td>
+      <table>
+        <tr>
+          <h3>Add Todo List</h3>
+          <div class="" id="addList">
+            <form class="" >
+              <input type="text" id="title" value="" placeholder="Enter title of Todo" required/>
+              <input type="text" id="desc" value="" placeholder="Enter description" required />
+              <button type="button" name="button" onclick="addList()">Add</button>
+            </form>
+          </div>
+        </tr>
+        <tr>
     <div class="" id="lists">
 
     </div>
+    </tr>
+    </table>
+    </td>
+    <td>
+      <table><tr>
     <div class="" id="addItem" style='display:none'>
+      <h3>Add TODO Item</h3>
       <form class="" >
         <input type="text" id="item-title" value="" placeholder="Enter title of item" required/>
         <button type="button" name="button" id="addItemButton" >Add Item</button>
       </form>
     </div>
+  </tr>
+  <tr>
     <div class="" id="items">
 
     </div>
+  </tr>
+  </table>
+    </td>
+    </tr>
+</table>
   </body>
 </html>
