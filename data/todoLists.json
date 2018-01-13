@@ -3,21 +3,10 @@
     "user": "veera",
     "todoLists": [
       {
-        "title": "sadf",
-        "desc": "sdfsdaf",
-        "date": "Fri Jan 12 2018 18:08:21 GMT+0530 (IST)",
-        "todoItems": [
-          {
-            "title": "hi",
-            "status": false,
-            "date": "Fri Jan 12 2018 18:48:07 GMT+0530 (IST)"
-          },
-          {
-            "title": "hi",
-            "status": false,
-            "date": "Fri Jan 12 2018 18:48:11 GMT+0530 (IST)"
-          }
-        ]
+        "title": "hello",
+        "desc": "i am first",
+        "date": "Sat Jan 13 2018 11:27:45 GMT+0530 (IST)",
+        "todoItems": []
       }
     ]
   }

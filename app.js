@@ -13,13 +13,20 @@ const saveEditedList = function (req,res) {
   res.redirect('/home.html');
 }
 
+const saveEditedItem = function (req,res) {
+  let user=req.user.userName;
+  let body=req.body;
+  todoApp.updateItem(user,body.listId,body.itemId,body.title);
+  serveUserListItems(req,res);
+}
+
 const listToHTML=function (todoLists) {
   let htmlStr=' ';
   todoLists.forEach((todoList,index)=>{
     htmlStr +=`<input type='text' value='${todoList.getTitle()}'  id='${index}_title' disabled />`
     htmlStr +=`<input type='text' value='${todoList.getDescription()}'  id='${index}_desc' disabled />
     <button type='button' onclick="editList('${index}_title','${index}_desc')" >Edit</button>
-    <button type='button' style='display:none'  onclick="saveEditedList('${index}_title','${index}_desc')">save</button>
+    <button type='button' style='display:none' id='${index}_title__${index}_desc' onclick="saveEditedList('${index}_title','${index}_desc')">save</button>
     <button type='button' onclick="deleteList('${index}_title','${index}_desc')">delete list</button>
     <button type='button' onclick="viewItems('${index}_title','${index}_desc')">view Items</button>
     <br>`;
@@ -55,10 +62,19 @@ const getUserInfoAsHtml = function (user) {
 const itemsToHTML =function (todoItems,listId) {
   let htmlStr='';
   todoItems.forEach((item,index)=>{
-    htmlStr +=`<input type='checkbox' value='${item.getTitle()}'  id='${index}_${listId}'  >${item.getTitle()}</input>`
-    htmlStr +=`<button type='button' onclick="editItem('${index}','${listId}')" >Edit</button>
-    <button type='button' style='display:none'  onclick="saveEditedItem('${index}_title','${index}_desc')">save</button>
-    <button type='button' onclick="deleteItem('${index}','${index}')">delete Item</button>
+    let itemInInput=`<input type='text' value='${item.getTitle()}'  id='${index}_${listId}'  disabled/>`;
+    let swapButtonText='done';
+    if(item.getStatus()){
+    htmlStr +=`<input type='text' style="color:green" value='${item.getTitle()}' onclick="updateItemStatus('${index}','${listId}')" id='${index}_${listId}'  disabled/>`;
+    swapButtonText='undone';
+    }else{
+    htmlStr +=itemInInput;
+  }
+
+    htmlStr +=`<button type='button'  onclick="editItem('${index}','${listId}')" >Edit</button>
+    <button type='button'  onclick="updateItem('${index}','${listId}')" >${swapButtonText}</button>
+    <button type='button' style="display:none"  id="${index}__${listId}" onclick="saveEditedItem('${index}','${listId}')">save Item</button>
+    <button type='button' onclick="deleteItem('${index}','${listId}')">delete Item</button>
 
     <br>`
   })
@@ -70,23 +86,22 @@ const addItem = function (req,res) {
   let listId=req.body.listId;
   let title=req.body.title;
   todoApp.todos[user].addTodoItem(listId,title);
-  let todoItems=todoApp.todos[user].todoLists[listId].todoItems;
   todoApp.saveTodos();
-  let header={
-    'content-type':'text/html'
-  }
-  res.respond(itemsToHTML(todoItems,listId),200,header);
+  serveUserListItems(req,res);
 }
 
+const updateItemStatus = function (req,res) {
+  let user=req.user.userName;
+  let body=req.body;
+  todoApp.updateItemStatus(user,body.listId,body.itemId);
+  serveUserListItems(req,res);
+}
 
 const deleteItem = function (req,res) {
   let user=req.user.userName;
-  todoApp.deleteListItem(user,req.body.listId,req.body.itemId);
-  let todoItems=todoApp.todos[user].todoLists[listId].todoItems;
-  let header={
-    'content-type':'text/html'
-  }
-  res.respond(itemsToHTML(todoItems,listId),200,header);
+  let listId=req.body.listId;
+  todoApp.deleteListItem(user,listId,req.body.itemId);
+  serveUserListItems(req,res);
 }
 
 const serveUserListItems= function (req,res) {
@@ -182,6 +197,8 @@ app.post('/items',serveUserListItems);
 
 app.post('/addItem',addItem);
 app.post('/deleteItem',deleteItem);
+app.post('/saveEditedItem',saveEditedItem);
+app.post('/updateItemStatus',updateItemStatus);
 
 app.postProcess(servFile);
 app.postProcess(resourceNotFound);
