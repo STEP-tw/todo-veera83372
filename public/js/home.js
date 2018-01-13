@@ -80,6 +80,8 @@ let saveEditedList = function (titleId,descId) {
 
 let deleteList= function (titleId,descId) {
   doXMLRequest('post','/deleteList',displayList,`listId=${titleId.split('_')[0]}`);
+  document.getElementById('addItem').style.display="none";
+  document.getElementById('items').innerHTML='';
 }
 window.onload = function () {
   doXMLRequest('get','/loginStatus',handleLoginStatus);
