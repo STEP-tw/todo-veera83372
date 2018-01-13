@@ -108,10 +108,13 @@ const serveUserListItems= function (req,res) {
   let user=req.user.userName;
   let listId=req.body.listId;
   let todoItems=todoApp.todos[user].todoLists[listId].todoItems;
+  let listTitle=todoApp.todos[user].todoLists[listId].getTitle();
   let header={
     'content-type':'text/html'
   }
-  res.respond(itemsToHTML(todoItems,listId),200,header);
+  let userTodoItemsAsHtml=`<h2>${listTitle}</h2>`;
+  userTodoItemsAsHtml += itemsToHTML(todoItems,listId);
+  res.respond(userTodoItemsAsHtml,200,header);
 }
 
 const addUserTodoList=function (req,res) {
@@ -125,7 +128,8 @@ const redirectLoggedOutUserToLogin = function (req,res) {
     res.redirect('login.html');
 }
 
-let registered_users = [{userName:'veera',name:'veera venkata durga prasad'}];
+let registered_users = [{userName:'veera',name:'veera venkata durga prasad'},
+{userName:'neeraj',name:'nrjais'}];
 
 let toS = o=>JSON.stringify(o,null,2);
 
