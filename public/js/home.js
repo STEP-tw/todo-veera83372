@@ -68,7 +68,7 @@ let editList = function(titleId,descId){
 }
 
 let updateItem = function (itemId,listId) {
-  doXMLRequest('post','/updateItemStatus',displayItem`itemId=${itemId}&listId=${listId}`);
+  doXMLRequest('post','/updateItemStatus',displayItem,`itemId=${itemId}&listId=${listId}`);
 }
 
 let saveEditedList = function (titleId,descId) {

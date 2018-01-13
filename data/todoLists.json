@@ -1,6 +1,19 @@
 {
   "veera": {
     "user": "veera",
-    "todoLists": []
+    "todoLists": [
+      {
+        "title": "asdf",
+        "desc": "adsfsd",
+        "date": "Sat Jan 13 2018 12:54:32 GMT+0530 (IST)",
+        "todoItems": [
+          {
+            "title": "dfasdasfasd",
+            "status": false,
+            "date": "Sat Jan 13 2018 12:56:47 GMT+0530 (IST)"
+          }
+        ]
+      }
+    ]
   }
 }
