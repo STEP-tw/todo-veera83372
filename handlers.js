@@ -3,7 +3,7 @@ const saveEditedList = function (todoApp,req,res) {
   let user=req.user.userName;
   let body=req.body;
   todoApp.updateList(user,body.listId,body.title,body.desc);
-  res.redirect('/home.html');
+  serverUserTodoList(todoApp,req,res);
 }
 
 const saveEditedItem = function (todoApp,req,res) {
@@ -29,10 +29,10 @@ const listToHTML=function (todoLists) {
 
 const deleteUserList = function (todoApp,req,res) {
   let user=req.user.userName;
-  console.log(user,req.body.titleId)
   todoApp.deleteTodoList(user,req.body.titleId);
-  res.redirect('/home.html');
+  serverUserTodoList(todoApp,req,res);
 }
+
 const resourceNotFound = function (req,res) {
   res.statusCode=404;
   res.write('resource not found');
@@ -41,11 +41,14 @@ const resourceNotFound = function (req,res) {
 
 const serverUserTodoList= function (todoApp,req,res) {
   let header={'content-type':'text/html'};
-  if(todoApp.todos[req.user.userName])
-    return res.respond(listToHTML(todoApp.todos[req.user.userName].todoLists),200,header);
-  return res.respond('<b>no lists found</b>',200,header);
+  let todoListsAsHtml='<b>no lists found</b>'
+  let todoLists=todoApp.todos[req.user.userName].todoLists;
+  if(todoLists.length>0){
+    todoListsAsHtml =`<h1> Title ------- Description </h1>`
+    todoListsAsHtml += '<br>'+listToHTML(todoLists);
+  }
+  return res.respond(todoListsAsHtml,200,header);
 }
-
 
 const itemsToHTML =function (todoItems,listId) {
   let htmlStr='';
@@ -53,7 +56,7 @@ const itemsToHTML =function (todoItems,listId) {
     let itemInInput=`<input type='text' value='${item.getTitle()}'  id='${index}_${listId}'  disabled/>`;
     let swapButtonText='done';
     if(item.getStatus()){
-    htmlStr +=`<input type='text' style="color:green" value='${item.getTitle()}' onclick="updateItemStatus('${index}','${listId}')" id='${index}_${listId}'  disabled/>`;
+    htmlStr +=`<input type='text' style="text-decoration: line-through #FF3028;" value='${item.getTitle()}' onclick="updateItemStatus('${index}','${listId}')" id='${index}_${listId}'  disabled/>`;
     swapButtonText='undone';
     }else{
     htmlStr +=itemInInput;
@@ -108,7 +111,7 @@ const serveUserListItems= function (todoApp,req,res) {
 const addUserTodoList=function (todoApp,req,res) {
   let user=req.user.userName;
   todoApp.addTodoOfUser(user,req.body.title,req.body.desc);
-  res.redirect('/home.html');
+  serverUserTodoList(todoApp,req,res);
 }
 
 module.exports={

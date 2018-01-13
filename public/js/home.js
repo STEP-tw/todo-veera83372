@@ -15,36 +15,37 @@ let displayList = function () {
   document.getElementById('lists').innerHTML=this.response;
 }
 
+let displayItem = function () {
+  document.getElementById('items').innerHTML=this.response;
+}
 let addList = function(){
   let title=document.getElementById('title').value;
   let desc=document.getElementById('desc').value;
-  if(title.length>0&&desc.length>0)
-    doXMLRequest('post','/addList',function(){window.location.reload()},`title=${title}&desc=${desc}`);
+  if(title.length>0&&desc.length>0){
+    doXMLRequest('post','/addList',displayList,`title=${title}&desc=${desc}`);
+    document.getElementById('title').value='';
+    document.getElementById('desc').value='';
+  }
+
 }
 
 let addItem =function (listId) {
   let title=document.getElementById('item-title').value;
   document.getElementById('item-title').value='';
   if(title.length>0)
-    doXMLRequest('post','/addItem',function(){
-    document.getElementById('items').innerHTML=this.response;
-  },`title=${title}&listId=${listId}`);
+    doXMLRequest('post','/addItem',displayItem,`title=${title}&listId=${listId}`);
 }
 
 
 let viewItems =function (titleId,descId) {
   let listId=titleId.split('_')[0];
-    doXMLRequest('post','/items',function(){
-      document.getElementById('items').innerHTML=this.response;
-    },`listId=${listId}`);
+    doXMLRequest('post','/items',displayItem,`listId=${listId}`);
     document.getElementById('addItem').style.display="block";
     document.getElementById('addItemButton').onclick=addItem.bind(null,listId);
 }
 
 let deleteItem=function (index,listId) {
-  doXMLRequest('post','/deleteItem',function(){
-    document.getElementById('items').innerHTML=this.response;
-  },`listId=${listId}&itemId=${index}`);
+  doXMLRequest('post','/deleteItem',displayItem,`listId=${listId}&itemId=${index}`);
 }
 
 
@@ -56,9 +57,7 @@ let editItem = function(itemId,listId){
 let saveEditedItem = function (itemId,listId) {
   let title=document.getElementById(itemId+'_'+listId).value;
   if(title.length>0)
-    doXMLRequest('post','/saveEditedItem',function(){
-      document.getElementById('items').innerHTML=this.response;
-    },`title=${title}&itemId=${itemId}&listId=${listId}`);
+    doXMLRequest('post','/saveEditedItem',displayItem,`title=${title}&itemId=${itemId}&listId=${listId}`);
 }
 
 
@@ -69,20 +68,18 @@ let editList = function(titleId,descId){
 }
 
 let updateItem = function (itemId,listId) {
-  doXMLRequest('post','/updateItemStatus',function(){
-    document.getElementById('items').innerHTML=this.response;
-  },`itemId=${itemId}&listId=${listId}`);
+  doXMLRequest('post','/updateItemStatus',displayItem`itemId=${itemId}&listId=${listId}`);
 }
 
 let saveEditedList = function (titleId,descId) {
   let title=document.getElementById(titleId).value;
   let desc=document.getElementById(descId).value;
   if(title.length>0&&desc.length>0)
-    doXMLRequest('post','/saveEditedList',function(){window.location.reload()},`title=${title}&desc=${desc}&listId=${titleId.split('_')[0]}`);
+    doXMLRequest('post','/saveEditedList',displayList,`title=${title}&desc=${desc}&listId=${titleId.split('_')[0]}`);
 }
 
 let deleteList= function (titleId,descId) {
-  doXMLRequest('post','/deleteList',function(){window.location.reload()},`listId=${titleId.split('_')[0]}`);
+  doXMLRequest('post','/deleteList',displayList,`listId=${titleId.split('_')[0]}`);
 }
 window.onload = function () {
   doXMLRequest('get','/loginStatus',handleLoginStatus);
